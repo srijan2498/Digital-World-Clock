@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./style.css">
+    <link rel="icon" href="./favicon.gif">
+    <title>Digital Clock</title>
+</head>
+
+<body onload="setTimer()">
+    <div class="container" id="container">
+        <div class="nav" id="nav">
+            <span class="logo">World-Clock</span>
+            <ul>
+                <li onclick="selectPlace(this)">NY</li>
+                <li onclick="selectPlace(this)">IND</li>
+                <li onclick="selectPlace(this)">JPN</li>
+                <li onclick="selectPlace(this)">S Korea</li>
+                <li onclick="selectPlace(this)">UK</li>
+                <li onclick="selectPlace(this)">GER</li>
+            </ul>
+        </div>
+        <div class="placeSelected">
+            Selected Place: <span class="place" id="place">Your default location</span>
+        </div>
+        <div class="clock">
+            <span id="hour"></span>:<span id="mins"></span>:<span id="secs"></span><span id="ampm"></span>
+        </div>
+        <div class="location">
+            <span id="lat"></span>
+            <span id="lon"></span>
+        </div>
+        <div class="footer" id="footer">Developed with ❤️ by Srijan Tripathi</div>
+        <div class="loading" id="loading">
+            <div class="bigLoad">
+                <div class="smallLoad"></div>
+            </div>
+        </div>
+        
+    </div>
+</body>
+<script>
+    let place = "";
+    function setTimer() {
+        setTimeout(loadPage, 2000);
+        setInterval(getTime, 1000);
+    }
+    function loadPage(){
+        document.getElementById("loading").style.display="none";
+    }
+    function selectPlace(e){
+        place = e.innerHTML;
+        document.getElementById("place").innerHTML = place;
+    }
+    function getTime() {
+        const date = new Date();
+        const utcHour = date.getUTCHours();
+        const utcMins = date.getUTCMinutes();
+        let hour = 0;
+        let mins = 0;
+        switch (place) {
+            case "NY":
+                hour = -4 + utcHour;
+                mins = 0 + utcMins;
+                break;
+            case "IND":
+                hour = 5 + utcHour;
+                mins = 30 + utcMins;
+                break;
+            case "JPN":
+                hour = 9 + utcHour;
+                mins = 0 + utcMins;
+                break;
+            case "S Korea":
+                hour = 9 + utcHour;
+                mins = 0 + utcMins;
+                break;
+            case "UK":
+                hour = 1 + utcHour;
+                mins = 0 + utcMins;
+                break;
+            case "GER":
+                hour = 2 + utcHour;
+                mins = 0 + utcMins;
+                break;
+            default:
+                hour = date.getHours();
+                mins = date.getMinutes();
+                break;
+        }
+
+        const secs = date.getSeconds();
+
+        if (mins > 60) {
+            mins = mins - 60;
+            hour = (hour + 1)-12;
+        }
+
+        if(hour >= 24){
+            hour = hour - 24;
+        }
+
+        if (hour > 6 && hour < 19) {
+            document.getElementById("container").style.backgroundColor = "#d2976f";
+            document.getElementById("container").style.color = " #333";
+            document.getElementById("nav").style.color = " #333";
+            document.getElementById("nav").style.backgroundColor = "orange";
+        } else {
+            document.getElementById("container").style.backgroundColor = "#504675";
+            document.getElementById("container").style.color = " #fff";
+            document.getElementById("nav").style.backgroundColor = "#434A54";
+            document.getElementById("nav").style.color = " #fff";
+        }
+
+        if (hour === 24 || hour < 12) {
+            document.getElementById("ampm").innerHTML = "AM";
+        } else {
+            document.getElementById("ampm").innerHTML = "PM";
+        }
+
+        if (hour <= 12) {
+            if(hour < 10){
+                document.getElementById("hour").innerHTML = "0" + hour;
+            }
+            else{
+                document.getElementById("hour").innerHTML = hour;
+            }
+        } else {
+            hour = hour - 12;
+            if (hour < 10) {
+                document.getElementById("hour").innerHTML = "0" + hour;
+            }
+            else {
+                document.getElementById("hour").innerHTML = hour;
+            }
+        }
+
+        if (mins >= 10) {
+            document.getElementById("mins").innerHTML = mins;
+        } else {
+            document.getElementById("mins").innerHTML = "0" + mins;
+        }
+
+        if (secs >= 10) {
+            document.getElementById("secs").innerHTML = secs;
+        } else {
+            document.getElementById("secs").innerHTML = "0" + secs;
+        }
+
+        getLocation();
+
+    }
+
+    function getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition);
+        }
+    }
+
+    function showPosition(position) {
+        document.getElementById("lat").innerHTML = Math.round(position.coords.latitude * 100) / 100 + "° lat ";
+        document.getElementById("lon").innerHTML = Math.round(position.coords.longitude * 100) / 100 + "° lon";
+    }
+</script>
+
+</html>
